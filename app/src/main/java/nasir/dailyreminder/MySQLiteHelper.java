@@ -154,6 +154,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // return reminders
         return reminders;
     }
+    public int getRemaindersCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_REMINDERS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
 
     // Updating single reminder
     public int updateReminder(Reminder reminder) {

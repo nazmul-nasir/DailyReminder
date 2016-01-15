@@ -27,7 +27,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         MySQLiteHelper db = new MySQLiteHelper(this);
         List<Reminder> list = db.getAllReminders();
-        textView.setText(db.getAllReminders().toString());
+        int count=db.getRemaindersCount();
+     //  textView.setText(list.get(0).toString());
+        textView.setText(""+count+db.getReminder(1).getReminder());
     }
 
     @Override
