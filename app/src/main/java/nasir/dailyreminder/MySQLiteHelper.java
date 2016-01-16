@@ -163,6 +163,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return cnt;
     }
 
+    public int getFirstId() {
+        String countQuery = "SELECT  * FROM " + TABLE_REMINDERS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        cursor.moveToFirst();
+
+        int cnt = Integer.parseInt(cursor.getString(0));
+        cursor.close();
+        return cnt;
+    }
+
+
     // Updating single reminder
     public int updateReminder(Reminder reminder) {
 

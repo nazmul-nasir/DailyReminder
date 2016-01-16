@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -14,7 +15,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     Button addNew;
     TextView textView;
-
+    int count,hour,min;
+    int counter=1,empty=0;
+     static int first_id;
+    String reminder,format;
+    MySQLiteHelper db = new MySQLiteHelper(this);
+    List<Reminder> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,11 +31,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         addNew.setOnClickListener(this);
 
-        MySQLiteHelper db = new MySQLiteHelper(this);
-        List<Reminder> list = db.getAllReminders();
-        int count=db.getRemaindersCount();
+
+       /* List<Reminder> list = db.getAllReminders();
+        count=db.getRemaindersCount();
+        first_id=db.getFirstId();
+        counter=first_id;*/
+      refresh();
+
+        if (count==0)
+        {
+            textView.setText("(Empty)");
+        }
+        else
+        {
+            setText();
+           // textView.setText(""+"count : "+count +" counter : "+counter +"first id "+first_id);
+        }
      //  textView.setText(list.get(0).toString());
-        textView.setText(""+count+db.getReminder(1).getReminder());
+       // textView.setText(""+db.getReminder(1).getReminder()+"\nTime :- "+db.getReminder(1).getHour() + ":"+db.getReminder(1).getMinute()+":" +db.getReminder(1).getFormat());
     }
 
     @Override
@@ -37,6 +56,85 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Intent intent = new Intent(getApplicationContext(), AddNew.class);
         intent.putExtra("value", "new");
         startActivity(intent);
+
+    }
+
+    public void next(View view)
+    {
+      //  List<Reminder> list = db.getAllReminders();
+       // count=db.getRemaindersCount();
+
+        if (count==0)
+        {
+            textView.setText("(Empty)");
+        }
+        else
+        {
+            counter=counter+1;
+
+            if((first_id+count)<=counter)
+                counter=first_id;
+            setText();
+        }
+
+
+    }
+
+    public void setText()
+    {
+       // list = db.getAllReminders();
+        //textView.setText(""+first_id);
+        //textView.setText(list.toString());
+     // textView.setText("couter : "+counter +"count: "+count);
+       // textView.setText(""+list.get(counter-first_id).getId());
+       textView.setText(""+ list.get(counter - first_id).getId()+" " + list.get(counter - first_id).getReminder() + "\n\nTime :- " + list.get(counter - first_id).getHour() + ":" + list.get(counter - first_id).getMinute() + ":" + list.get(counter - first_id).getFormat());
+
+
+    }
+
+
+    public void delete(View view)
+    {
+        //List<Reminder> list = db.getAllReminders();
+       // count=db.getRemaindersCount();
+        if(count>=1)
+        db.deleteReminder(list.get(counter-first_id));
+        else
+        Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show();
+
+
+
+        //count=db.getRemaindersCount();
+        refresh();
+
+        if (count==0)
+        {
+            textView.setText("(Empty)");
+        }
+        else
+        {
+            //counter=counter-1;
+            setText();
+        }
+
+
+    }
+
+    public void refresh()
+    {
+        list = db.getAllReminders();
+        count=db.getRemaindersCount();
+
+        if(count==0)
+        {
+            empty=1;
+
+        }
+        else
+        {
+            first_id=db.getFirstId();
+            counter=first_id;
+        }
 
     }
 }

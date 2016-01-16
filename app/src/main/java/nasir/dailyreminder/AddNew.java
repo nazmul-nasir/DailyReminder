@@ -2,6 +2,7 @@ package nasir.dailyreminder;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,6 +63,10 @@ public class AddNew extends Activity {
 
             db.addReminder(new Reminder(addnew.getText().toString(),hour,min,format));
             Toast.makeText(this, "Reminder has been added successfully", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //intent.putExtra("value", "new");
+            startActivity(intent);
         }
 
 
