@@ -22,6 +22,14 @@ public class Reminder {
         this.minute = minute;
         this.format = format;
     }
+    public Reminder(int id,String reminder, int hour, int minute, String format) {
+        super();
+        this.id=id;
+        this.reminder = reminder;
+        this.hour = hour;
+        this.minute = minute;
+        this.format = format;
+    }
 
     public int getId() {
         return id;

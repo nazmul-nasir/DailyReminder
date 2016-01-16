@@ -59,6 +59,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    public void update(View view)
+    {
+        Intent intent = new Intent(getApplicationContext(), Update.class);
+        //Toast.makeText(this,""+list.get(counter-first_id).getId(), Toast.LENGTH_LONG).show();
+        intent.putExtra("id", ""+list.get(counter-first_id).getId());
+        startActivity(intent);
+    }
+
     public void next(View view)
     {
       //  List<Reminder> list = db.getAllReminders();

@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddNew"></activity>
+        <activity android:name=".Update"></activity>
     </application>
 
 </manifest>

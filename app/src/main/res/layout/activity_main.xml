@@ -31,7 +31,9 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Edit" />
+            android:text="Edit"
+            android:onClick="update"
+            />
         <Button
             android:id="@+id/delete"
             android:layout_width="0dp"
