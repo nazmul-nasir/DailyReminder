@@ -1,6 +1,9 @@
 package nasir.dailyreminder;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -105,8 +108,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
     {
         //List<Reminder> list = db.getAllReminders();
        // count=db.getRemaindersCount();
-        if(count>=1)
-        db.deleteReminder(list.get(counter-first_id));
+        int id;
+        if(count>=1) {
+            id=list.get(counter-first_id).getId();
+            db.deleteReminder(list.get(counter - first_id));
+
+
+            Intent intent = new Intent(this,AlertReceiver.class);
+            intent.putExtra("id",id);
+            PendingIntent pi = PendingIntent.getBroadcast(this, id,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+         //   am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+           //         AlarmManager.INTERVAL_DAY, pi);
+            am.cancel(pi);
+
+        }
         else
         Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show();
 
@@ -123,6 +140,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         {
             //counter=counter-1;
             setText();
+
+
         }
 
 

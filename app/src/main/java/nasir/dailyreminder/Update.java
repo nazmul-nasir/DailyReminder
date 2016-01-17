@@ -1,6 +1,9 @@
 package nasir.dailyreminder;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Nasir on 1/13/2016.
@@ -22,7 +26,7 @@ public class Update extends Activity {
     private TextView time;
     private String format = "";
     private Calendar calendar;
-    int id,hour,min;
+    int id,hour,min,count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,9 @@ public class Update extends Activity {
 
         MySQLiteHelper db = new MySQLiteHelper(this);
 
+        List<Reminder> list = db.getAllReminders();
+         count=db.getRemaindersCount();
+
       //  Toast.makeText(this,""+Integer.parseInt(value),Toast.LENGTH_LONG).show();
 
         Reminder reminder=db.getReminder(Integer.parseInt(value));
@@ -60,32 +67,35 @@ public class Update extends Activity {
     }
 
     public void update(View view) {
+        if (count==0)
+        {
+            Toast.makeText(this,"(Empty Reminder)", Toast.LENGTH_LONG).show();
+        }
 
-        if (addnew.getText().toString().trim().length() == 0)
+        else if (addnew.getText().toString().trim().length() == 0)
         {
             Toast.makeText(this,"Enter Reminder", Toast.LENGTH_LONG).show();
         }
         else
         {
-            hour = timePicker1.getCurrentHour();
-            min = timePicker1.getCurrentMinute();
+            int hour_update = timePicker1.getCurrentHour();
+            int min_update = timePicker1.getCurrentMinute();
+            
+            if(hour==hour_update && min==min_update)
+            {
+                
+            }
+            else
+            {
+                update_alarm();
+                hour=hour_update;
+                min=min_update;
+                
+            }
 
             MySQLiteHelper db = new MySQLiteHelper(this);
 
-          //  Toast.makeText(this,""+Integer.parseInt(value),Toast.LENGTH_LONG).show();
-
-          //  Reminder reminder=db.getReminder(Integer.parseInt(value));
-
-           /* int hour = reminder.getHour();
-            int min = reminder.getMinute();
-            format = reminder.getFormat();
-
-            addnew.setText(reminder.getReminder());*/
-
-
-
-
-
+          
 
             formatTime(hour, min);
 
@@ -103,6 +113,33 @@ public class Update extends Activity {
 
 
     }
+
+    private void update_alarm() {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, hour); // For 1 PM or 2 PM
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, 0);
+
+        Intent intent = new Intent(this,AlertReceiver.class);
+        intent.putExtra("id",id);
+        PendingIntent pi = PendingIntent.getBroadcast(this, id,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //   am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        //         AlarmManager.INTERVAL_DAY, pi);
+        am.cancel(pi);
+
+        intent = new Intent(this,AlertReceiver.class);
+        intent.putExtra("id",id);
+         pi = PendingIntent.getBroadcast(this, id,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+           am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                 AlarmManager.INTERVAL_DAY, pi);
+
+    }
+
     public void cancel(View view)
     {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
