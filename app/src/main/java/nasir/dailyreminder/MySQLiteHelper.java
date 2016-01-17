@@ -176,6 +176,32 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
     // Updating single reminder
+    public int topID()
+    {
+       /* int lastId=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+       // Cursor cursor = db.rawQuery(countQuery, null);
+        String query = "SELECT  id FROM " + TABLE_REMINDERS +"order by id DESC limit 1";
+       // String query = "SELECT ROWID from MYTABLE order by ROWID DESC limit 1";
+        Cursor c = db.rawQuery(query,null);
+        //c.moveToLast();
+        if (c != null && c.moveToFirst()) {
+            lastId = c.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        c.close();
+
+        return lastId;*/
+
+        String countQuery = "SELECT  * FROM " + TABLE_REMINDERS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        cursor.moveToLast();
+
+        int cnt = Integer.parseInt(cursor.getString(0));
+        cursor.close();
+        return cnt;
+
+    }
     public int updateReminder(Reminder reminder) {
 
         // 1. get reference to writable DB

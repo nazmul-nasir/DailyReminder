@@ -1,7 +1,10 @@
 package nasir.dailyreminder;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -61,8 +64,14 @@ public class AddNew extends Activity {
             formatTime(hour, min);
 
 
-            db.addReminder(new Reminder(addnew.getText().toString(),hour,min,format));
+            db.addReminder(new Reminder(addnew.getText().toString(), hour, min, format));
             Toast.makeText(this, "Reminder has been added successfully", Toast.LENGTH_LONG).show();
+            int lastid=db.topID();
+
+            Toast.makeText(this, "Last id" + lastid, Toast.LENGTH_LONG).show();
+
+
+            setAlarm(hour,min,lastid);
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             //intent.putExtra("value", "new");
@@ -75,12 +84,27 @@ public class AddNew extends Activity {
 
     }
 
-   /* public void setTime(View view) {
-        int hour = timePicker1.getCurrentHour();
-        int min = timePicker1.getCurrentMinute();
-        showTime(hour, min);
+    private void setAlarm(int hour, int min, int id) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, hour); // For 1 PM or 2 PM
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, 0);
+        Intent intent = new Intent(this,AlertReceiver.class);
+        intent.putExtra("id",id);
+        PendingIntent pi = PendingIntent.getBroadcast(this, id,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pi);
     }
-*/
+
+    /* public void setTime(View view) {
+         int hour = timePicker1.getCurrentHour();
+         int min = timePicker1.getCurrentMinute();
+         showTime(hour, min);
+     }
+ */
     public void formatTime(int hour, int min) {
         if (hour == 0) {
             hour += 12;
