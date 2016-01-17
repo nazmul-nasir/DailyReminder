@@ -19,14 +19,17 @@ public class AlertReceiver extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent) {
 
 
-        String value = intent.getExtras().getString("id");
-        Toast.makeText(context, "value "+value , Toast.LENGTH_LONG).show();
+
+
+         id = intent.getIntExtra("id",0);
+       // intent.getIntExtra("value")
+        //Toast.makeText(context, "value "+value , Toast.LENGTH_LONG).show();
        // id=Integer.parseInt(value);
 
        // MySQLiteHelper db = new MySQLiteHelper(this);
 
 
-        createNotification(context, "Reminder", "about reminder", "Reminder");
+        createNotification(context, "Reminder", "About reminder", "You have Reminder");
 
 
     }
@@ -35,10 +38,10 @@ public class AlertReceiver extends BroadcastReceiver{
 
         // Define an Intent and an action to perform with it by another application
 
-    //    MySQLiteHelper db = new MySQLiteHelper(context);
+        MySQLiteHelper db = new MySQLiteHelper(context);
 
-     //   Reminder reminder = db.getReminder(id);
-       // msgText =reminder.getReminder();
+        Reminder reminder = db.getReminder(id);
+        msgText =reminder.getReminder();
 
         Intent intent = new Intent(context,MoreInfoNotification.class);
         intent.putExtra("value",msgText);

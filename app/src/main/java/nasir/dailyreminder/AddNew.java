@@ -68,7 +68,7 @@ public class AddNew extends Activity {
             Toast.makeText(this, "Reminder has been added successfully", Toast.LENGTH_LONG).show();
             int lastid=db.topID();
 
-            Toast.makeText(this, "Last id" + lastid, Toast.LENGTH_LONG).show();
+          //  Toast.makeText(this, "Last id" + lastid, Toast.LENGTH_LONG).show();
 
 
             setAlarm(hour,min,lastid);

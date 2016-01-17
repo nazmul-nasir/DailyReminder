@@ -26,7 +26,8 @@
                 android:value=".MainActivity"/>
         </activity>
 
-        <receiver android:name=".AlertReceiver"/>
+        <receiver android:name=".AlertReceiver"
+            android:process=":remote"/>
     </application>
 
 </manifest>
