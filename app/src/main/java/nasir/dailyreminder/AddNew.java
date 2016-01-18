@@ -73,9 +73,11 @@ public class AddNew extends Activity {
 
             setAlarm(hour,min,lastid);
 
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            //intent.putExtra("value", "new");
-            startActivity(intent);
+//            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//            //intent.putExtra("value", "new");
+//            startActivity(intent);
+           // setResult(RESULT_CLOSE_ALL);
+            finish();
         }
 
 

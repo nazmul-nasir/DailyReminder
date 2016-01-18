@@ -36,6 +36,7 @@ public class Update extends Activity {
         //Bundle extras = getIntent().getExtras();
 
         value = getIntent().getExtras().getString("id");
+        id=getIntent().getIntExtra("id",0);
         timePicker1 = (TimePicker) findViewById(R.id.timePicker1);
         addnew = (EditText) findViewById(R.id.etAddNew);
        //addnew.setText(value);
@@ -87,25 +88,31 @@ public class Update extends Activity {
             }
             else
             {
-                update_alarm();
+
                 hour=hour_update;
                 min=min_update;
+
+
+                MySQLiteHelper db = new MySQLiteHelper(this);
+
+
+
+                formatTime(hour, min);
+
+
+                db.updateReminder(new Reminder(id,addnew.getText().toString(), hour, min, format));
+                Toast.makeText(this, "Reminder has been updated successfully", Toast.LENGTH_LONG).show();
+
+                update_alarm();
                 
             }
 
-            MySQLiteHelper db = new MySQLiteHelper(this);
+//
+//            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//            //intent.putExtra("value", "new");
+//            startActivity(intent);
 
-          
-
-            formatTime(hour, min);
-
-
-            db.updateReminder(new Reminder(Integer.parseInt(value),addnew.getText().toString(), hour, min, format));
-            Toast.makeText(this, "Reminder has been updated successfully", Toast.LENGTH_LONG).show();
-
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            //intent.putExtra("value", "new");
-            startActivity(intent);
+            finish();
         }
 
 
@@ -122,21 +129,21 @@ public class Update extends Activity {
         calendar.set(Calendar.SECOND, 0);
 
         Intent intent = new Intent(this,AlertReceiver.class);
-        intent.putExtra("id",id);
+        intent.putExtra("id", id);
         PendingIntent pi = PendingIntent.getBroadcast(this, id,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        //   am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-        //         AlarmManager.INTERVAL_DAY, pi);
+         //  am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+           //        AlarmManager.INTERVAL_DAY, pi);
         am.cancel(pi);
 
-        intent = new Intent(this,AlertReceiver.class);
-        intent.putExtra("id",id);
-         pi = PendingIntent.getBroadcast(this, id,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-           am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                 AlarmManager.INTERVAL_DAY, pi);
+        Intent intent1 = new Intent(this,AlertReceiver.class);
+        intent1.putExtra("id", id);
+         PendingIntent pi1 = PendingIntent.getBroadcast(this, id,
+                intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+         AlarmManager am1 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+           am1.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                 AlarmManager.INTERVAL_DAY, pi1);
 
     }
 

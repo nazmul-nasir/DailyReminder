@@ -58,7 +58,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), AddNew.class);
         intent.putExtra("value", "new");
-        startActivity(intent);
+        startActivityForResult(intent,0);
+
+        refresh();
 
     }
 
@@ -67,7 +69,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Intent intent = new Intent(getApplicationContext(), Update.class);
         //Toast.makeText(this,""+list.get(counter-first_id).getId(), Toast.LENGTH_LONG).show();
         intent.putExtra("id", ""+list.get(counter-first_id).getId());
-        startActivity(intent);
+        startActivityForResult(intent,0);
+        refresh();
     }
 
     public void next(View view)
@@ -163,5 +166,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             counter=first_id;
         }
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
     }
 }

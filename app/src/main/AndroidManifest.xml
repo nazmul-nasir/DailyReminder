@@ -15,8 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddNew"></activity>
-        <activity android:name=".Update"></activity>
+        <activity android:name=".AddNew" android:excludeFromRecents="true"
+            android:noHistory="true"></activity>
+        <activity android:name=".Update" android:excludeFromRecents="true"
+            android:noHistory="true"></activity>
 
         <activity android:name=".MoreInfoNotification"
             android:label="More on notification"
