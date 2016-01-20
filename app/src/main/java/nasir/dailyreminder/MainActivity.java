@@ -5,8 +5,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,20 +18,23 @@ import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    Button addNew;
+    Button addNew,next_btn;
     TextView textView;
     int count,hour,min;
     int counter=1,empty=0;
-     static int first_id;
+     static int first_id,top_id;
     String reminder,format;
     MySQLiteHelper db = new MySQLiteHelper(this);
     List<Reminder> list;
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         addNew =(Button) findViewById(R.id.addNew);
+        next_btn =(Button) findViewById(R.id.next);
         textView=(TextView)(findViewById(R.id.textView));
 
         addNew.setOnClickListener(this);
@@ -58,7 +63,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), AddNew.class);
         intent.putExtra("value", "new");
-        startActivityForResult(intent,0);
+        startActivity(intent);
 
         refresh();
 
@@ -69,7 +74,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Intent intent = new Intent(getApplicationContext(), Update.class);
         //Toast.makeText(this,""+list.get(counter-first_id).getId(), Toast.LENGTH_LONG).show();
         intent.putExtra("id", ""+list.get(counter-first_id).getId());
-        startActivityForResult(intent,0);
+        startActivity(intent);
         refresh();
     }
 
@@ -154,6 +159,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     {
         list = db.getAllReminders();
         count=db.getRemaindersCount();
+        top_id=db.topID();
 
         if(count==0)
         {
@@ -168,10 +174,77 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    public void previous()
+    {
+        if (count==0)
+        {
+            textView.setText("(Empty)");
+        }
+        else
+        {
+            counter=counter-1;
+
+            if(first_id>counter)
+                counter=first_id+count-1;
+            setText();
+        }
+
+
+    }
+
+
+    int backButtonCount=0;
+
+    public void onBackPressed() {
+        if (backButtonCount >= 1) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return;
+        }
+        Toast.makeText(this, "Press the back button once again to exit.", Toast.LENGTH_LONG).show();
+        this.backButtonCount++;
+    }
 
     @Override
-    public void onBackPressed() {
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
 
-        super.onBackPressed();
+                if (Math.abs(deltaX) > MIN_DISTANCE)
+                {
+                    // Left to Right swipe action
+                    if (x2 > x1)
+                    {
+                       previous();
+                       // Toast.makeText(this, "Left to Right swipe [Next]", Toast.LENGTH_SHORT).show ();
+                    }
+
+                    // Right to left swipe action
+                    else
+                    {
+                        //Toast.makeText(this, "Right to Left swipe [Previous]", Toast.LENGTH_SHORT).show ();
+                        next_btn.performClick();
+
+
+                    }
+
+                }
+                else
+                {
+                    // consider as something else - a screen tap for example
+
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
     }
 }
